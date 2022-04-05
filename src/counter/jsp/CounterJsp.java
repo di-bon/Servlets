@@ -46,7 +46,8 @@ public class CounterJsp extends HttpServlet {
 			if (shouldReset.equalsIgnoreCase("yes")) {
 				count = 0;
 				list.clear();
-				response.sendRedirect("/CounterJsp");
+				response.sendRedirect("/Servlets/CounterJsp");
+				return;
 			}
 		}
 		request.setAttribute("count", count);
