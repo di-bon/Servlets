@@ -25,15 +25,18 @@
 			<input type="submit" value="Reset">
 		</div>
 	</form>
+	<form action="/Servlets/CounterJsp" method="post">
 	<table class="table table-striped table-hover">
-		<tr><th>Address</th><th>Port</th><th>Date</th></tr>
+		<tr><th>Address</th><th>Port</th><th>Date</th><th>Delete</th></tr>
 		<c:forEach var="visitor" items="${list}">
 			<tr>
 				<td><c:out value="${visitor.getAddress()}" /></td>
 				<td><c:out value="${visitor.getPort()}" /></td>
 				<td><c:out value="${visitor.getDate()}" /></td>
+				<td><input type="hidden" name="deleteUserAt" value="${visitor.id}" /><input type="submit" value="Delete"/><td>
 			</tr>
 		</c:forEach>
 	</table>
+	</form>
 </body>
 </html>

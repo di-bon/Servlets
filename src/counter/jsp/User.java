@@ -6,11 +6,13 @@ public class User {
 	public Date date;
 	public String address;
 	public int port;
+	public int id;
 	
-	public User(Date date, String address, int port) {
+	public User(Date date, String address, int port, int id) {
 		this.date = date;
 		this.address = address;
 		this.port = port;
+		this.id = id;
 	}
 //	public String toString() {
 //		return ""+port;
@@ -24,5 +26,8 @@ public class User {
 	}
 	public String getDate() {
 		return date.toString();
+	}
+	public String getId() {
+		return ""+id;
 	}
 }
