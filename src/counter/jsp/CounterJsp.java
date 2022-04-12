@@ -3,6 +3,7 @@ package counter.jsp;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -46,25 +47,39 @@ public class CounterJsp extends HttpServlet {
 		if (shouldDeleteUser != null) {
 			try {
 				int userId = Integer.parseInt(shouldDeleteUser);
-				int size = list.size();
-				for (int i = 0; i < size; i++) {
-					if (list.get(i).id == userId) {
-						list.remove(i);
-						count--;
-						justUpdated = true;	
+				Iterator<User> iterator = list.iterator();
+				while (iterator.hasNext()) {
+					User user = (User) iterator.next();
+					if (user.id == userId) {
+						list.remove(user);
+						count = list.size();
+						justUpdated = true;
 						break;
 					}
 				}
-				response.sendRedirect("/Servlets/CounterJsp");
-				return;
 			} catch (NumberFormatException nfe) {}
-			catch (IndexOutOfBoundsException ioobe) {}
+			
+//			try {
+//				int userId = Integer.parseInt(shouldDeleteUser);
+//				int size = list.size();
+//				for (int i = 0; i < size; i++) {
+//					if (list.get(i).id == userId) {
+//						list.remove(i);
+//						count--;
+//						justUpdated = true;	
+//						break;
+//					}
+//				}
+//				response.sendRedirect("/Servlets/CounterJsp");
+//				return;
+//			} catch (NumberFormatException nfe) {}
+//			catch (IndexOutOfBoundsException ioobe) {}
 		}
 		
 		String shouldReset = request.getParameter("reset");
 		if (shouldReset != null) {
 			if (shouldReset.equalsIgnoreCase("yes")) {
-				count = 0;
+//				count = 0;
 				list.clear();
 				response.sendRedirect("/Servlets/CounterJsp");
 				justUpdated = true;
@@ -73,12 +88,13 @@ public class CounterJsp extends HttpServlet {
 		}
 		
 		if (!justUpdated) {
-			count++;
+//			count++;
 			list.add(new User(new Date(), request.getRemoteAddr(), request.getRemotePort(), nextId));
 			nextId++;
 		}
 		justUpdated = false;
 		
+		count = list.size();
 		request.setAttribute("count", count);
 		request.setAttribute("list", list);
 		
