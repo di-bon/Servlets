@@ -20,7 +20,7 @@ public class CounterJsp extends HttpServlet {
 	private static int count = 0;
 	private ArrayList<User> list;
 	private static final long serialVersionUID = 1L;
-	private static int nextId = 0;
+//	private static int nextId = 0;
 	private boolean justUpdated = false;
        
     /**
@@ -48,9 +48,12 @@ public class CounterJsp extends HttpServlet {
 			try {
 				int userId = Integer.parseInt(shouldDeleteUser);
 				Iterator<User> iterator = list.iterator();
+				System.out.println("ID to remove: " + userId);
 				while (iterator.hasNext()) {
 					User user = (User) iterator.next();
+					System.out.println("Current id: " + user.id);
 					if (user.id == userId) {
+						System.out.println("Id matches. Removing user with id: " + user.id);
 						list.remove(user);
 						count = list.size();
 						justUpdated = true;
@@ -89,8 +92,8 @@ public class CounterJsp extends HttpServlet {
 		
 		if (!justUpdated) {
 //			count++;
-			list.add(new User(new Date(), request.getRemoteAddr(), request.getRemotePort(), nextId));
-			nextId++;
+			list.add(new User(new Date(), request.getRemoteAddr(), request.getRemotePort()));
+//			nextId++;
 		}
 		justUpdated = false;
 		
@@ -98,6 +101,7 @@ public class CounterJsp extends HttpServlet {
 		request.setAttribute("count", count);
 		request.setAttribute("list", list);
 		if (count == 0) {
+			System.out.println("Toast message set");
 			request.setAttribute("toastMessage", "There are no visitors!");
 		}
 		

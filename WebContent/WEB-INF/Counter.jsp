@@ -44,9 +44,9 @@
 	<script type="text/javascript">
 	
 	$(document).ready(function(){
-		if ($('.toast .toast-body').html().trim()!="") {
-			$('.toast').toast('show');
-		}
+/* 		if ($('.toast .toast-body').html().trim()!="") {
+ */			$('.toast').toast('show');
+		/* } */
 	})	
 	
 	</script>
@@ -108,7 +108,6 @@
 			<input type="button" name="deleteAll" id="deleteAll" value="Reset">
 		</div>
 	</form> -->
-	<form action="/Servlets/CounterJsp" method="post">
 	<table class="table table-striped table-hover">
 		<tr><th>Address</th><th>Port</th><th>Date</th><th>Delete</th></tr>
 		<c:forEach var="visitor" items="${list}">
@@ -116,10 +115,14 @@
 				<td><c:out value="${visitor.getAddress()}" /></td>
 				<td><c:out value="${visitor.getPort()}" /></td>
 				<td><c:out value="${visitor.getDate()}" /></td>
-				<td><input type="hidden" name="deleteUserAt" value="${visitor.id}" /><input type="submit" value="Delete" class="btn btn-primary"/><td>
+				<td>
+					<form action="/Servlets/CounterJsp" method="post">
+						<input type="hidden" name="deleteUserAt" value="${visitor.id}" />
+						<input type="submit" value="Delete" class="btn btn-primary"/>
+					</form>
+				<td>
 			</tr>
 		</c:forEach>
 	</table>
-	</form>
 </body>
 </html>

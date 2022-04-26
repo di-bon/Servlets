@@ -3,16 +3,17 @@ package counter.jsp;
 import java.util.Date;
 
 public class User {
+	private static int nextId = 0;
 	public Date date;
 	public String address;
 	public int port;
 	public int id;
 	
-	public User(Date date, String address, int port, int id) {
+	public User(Date date, String address, int port) {
 		this.date = date;
 		this.address = address;
 		this.port = port;
-		this.id = id;
+		this.id = nextId++;
 	}
 //	public String toString() {
 //		return ""+port;
