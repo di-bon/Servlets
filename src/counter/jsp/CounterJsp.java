@@ -97,6 +97,9 @@ public class CounterJsp extends HttpServlet {
 		count = list.size();
 		request.setAttribute("count", count);
 		request.setAttribute("list", list);
+		if (count == 0) {
+			request.setAttribute("toastMessage", "There are no visitors!");
+		}
 		
 		RequestDispatcher disp = request.getRequestDispatcher("/WEB-INF/Counter.jsp");
 		disp.forward(request, response);
