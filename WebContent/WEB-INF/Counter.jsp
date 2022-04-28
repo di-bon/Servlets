@@ -42,13 +42,11 @@
 	</script>
 	
 	<script type="text/javascript">
-	
-	$(document).ready(function(){
-/* 		if ($('.toast .toast-body').html().trim()!="") {
- */			$('.toast').toast('show');
-		/* } */
-	})	
-	
+		$(document).ready(function(){
+	 		if ($('.toast .toast-body').html().trim()!="") {
+				$('.toast').toast('show');
+			}
+		})
 	</script>
 	
 	<!-- Toast -->
@@ -63,20 +61,20 @@
 				<div class="toast" data-bs-delay="5000" data-autohide="false" role="alert" aria-live="assertive" aria-atomic="true">
 			  		<div class="toast-header">
 			    		<!-- img src="..." class="rounded me-2" alt="..." -->
-			    		<strong class="me-auto">Bootstrap</strong>
-			    		<small>popup</small>
+			    		<strong class="me-auto">Wooo</strong>
+			    		<!-- <small>popup</small> -->
 			    		<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
 				  	</div>
-				  	<div class="toast-body" value="${toastMessage}">
-				    	
+				  	<div class="toast-body">
+				    	${toastMessage}
 				  	</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
+	<!-- 
 	<button type="button" id="showtoast" data-id="123" class="btn btn-primary" onClick="$('.toast').toast('show')">Toast</button>
-	
+	 -->
 	<div id="modalDelete" class="modal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false" >>
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
