@@ -42,7 +42,7 @@ public class Loginator extends HttpServlet {
 		// TODO Auto-generated method stub
 
 		checkSession(request, response);
-		System.out.println("boooooooooh");
+		
 		String requestSource = request.getParameter("source");
 		
 		if (requestSource == null) {
@@ -61,9 +61,6 @@ public class Loginator extends HttpServlet {
 	}
 
 	private void handleLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//		if (session.getAttribute("username").equals(obj)) {
-//			
-//		}
 		
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
@@ -86,13 +83,14 @@ public class Loginator extends HttpServlet {
 	}
 	
 	private void checkSession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session;
-		session = request.getSession();
-		if (!session.isNew()) {
-			RequestDispatcher disp = request.getRequestDispatcher("/WEB-INF/Login.jsp");
-			disp.forward(request, response);
+		HttpSession session = request.getSession();
+		if (session.isNew()) {
 			return;
 		}
+		
+//		if (session.getAttribute(arg0)) {
+//			
+//		}
 	}
 
 	private void handleLogout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
