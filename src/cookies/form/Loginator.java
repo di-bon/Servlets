@@ -1,7 +1,7 @@
 package cookies.form;
 
 import java.io.IOException;
-
+import java.sql.SQLException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.apache.catalina.ha.session.SessionIDMessage;
 
 /**
  * Servlet implementation class Loginator
@@ -20,6 +18,7 @@ public class Loginator extends HttpServlet {
 	private static final String STORED_USERNAME = "pippo";
 	private static final String STORED_PASSWORD = "pippo1234";
 	private static final long serialVersionUID = 1L;
+	private RequestDispatcher disp = null;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -42,17 +41,14 @@ public class Loginator extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-
+		disp = null;
 		String requestSource = request.getParameter("source");
-
-		if (requestSource == null) {
-			System.out.println("The value of 'requestSource' is null");
-			RequestDispatcher disp = request.getRequestDispatcher("/WEB-INF/Login.jsp");
-			disp.forward(request, response);
-			return;
-		}
+		System.out.println("requestSource: " + requestSource);
 		
-		checkSession(request, response, requestSource);
+		if (requestSource == null || requestSource.equals("login.jsp")) {			
+			System.out.println("The value of 'requestSource' is null");
+			checkSession(request, response);
+		}
 		
 //		if (requestSource == null) {
 //			System.out.println("The value of 'requestSource' is null");
@@ -61,79 +57,84 @@ public class Loginator extends HttpServlet {
 //			return;
 //		}
 
-		System.out.println("Source: " + requestSource);	
-		if (requestSource.equals("login.jsp")) {
-			handleLogin(request, response);
-		} else if (requestSource.equals("logout.jsp")) {
-			handleLogout(request, response);
-		} else {
-			RequestDispatcher disp = request.getRequestDispatcher("/WEB-INF/Login.jsp");
-			disp.forward(request, response);
+		if (requestSource != null && disp == null) {
+			System.out.println("Source: " + requestSource);	
+			if (requestSource.equals("login.jsp")) {
+				handleLogin(request, response);
+			} else if (requestSource.equals("logout.jsp")) {
+				handleLogout(request, response);
+			}
 		}
+		if (disp == null) {
+			disp = request.getRequestDispatcher("/WEB-INF/Login.jsp");
+		}
+		disp.forward(request, response);
 	}
 
 	private void handleLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-
+		
 		if (username != null && password != null) {
-			if (username.equals(STORED_USERNAME) && password.equals(STORED_PASSWORD)) {
-				System.out.println("username and password match");
-				HttpSession session = request.getSession();
-				session.setMaxInactiveInterval(10);
-				session.setAttribute("username", username);
-				RequestDispatcher disp = request.getRequestDispatcher("/WEB-INF/Logout.jsp");
-				disp.forward(request, response);
-				return;
-			}
-			request.setAttribute("wrongPassword", true);
-			RequestDispatcher disp = request.getRequestDispatcher("/WEB-INF/Login.jsp");
-			disp.forward(request, response);
+			DbHelper dbHelper = new DbHelper();
+			try { 
+				dbHelper.connect();
+				boolean doesUserExist = dbHelper.logon(username, password);
+				dbHelper.disconnect();
+				
+				if (doesUserExist) {
+					HttpSession session = request.getSession();
+					session.setMaxInactiveInterval(10);
+					session.setAttribute("username", username);
+					session.setAttribute("password", password);
+					request.setAttribute("username", username);
+					disp = request.getRequestDispatcher("/WEB-INF/Logout.jsp");
+					disp.forward(request, response);
+					return;
+				}
+			} catch (SQLException sqle) {}
+//			if (username.equals(STORED_USERNAME) && password.equals(STORED_PASSWORD)) {
+//				System.out.println("username and password match");
+//				HttpSession session = request.getSession();
+//				session.setMaxInactiveInterval(10);
+//				session.setAttribute("username", username);
+//				disp = request.getRequestDispatcher("/WEB-INF/Logout.jsp");
+////				disp.forward(request, response);
+//				return;
+//			}
+//			request.setAttribute("wrongPassword", true);
+			disp = request.getRequestDispatcher("/WEB-INF/Login.jsp");
 			return;
 		}
 	}
 	
-	private void checkSession(HttpServletRequest request, HttpServletResponse response, String requestSource) throws ServletException, IOException {
+	private void checkSession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		String pastUsername = (String) session.getAttribute("username");
-//		String pastPassword = (String) session.getAttribute("password");
+		String pastPassword = (String) session.getAttribute("password");
 		
-//		if (pastUsername == null && !requestSource.equals("login.jsp")) {
-//			request.setAttribute("source", "login.jsp");
-//			RequestDispatcher disp = request.getRequestDispatcher("/WEB-INF/login.jsp");
-//			disp.forward(request, response);
-//			return;
-//		}
-		
-		
-		if (pastUsername == null) {
-//			RequestDispatcher disp = request.getRequestDispatcher("/WEB-INF/Login.jsp");
-//			disp.forward(request, response);
+		if (pastUsername == null || pastPassword == null) {
 			return;
 		}
 		
-		if (pastUsername.equals(STORED_USERNAME)) {
-			RequestDispatcher disp = request.getRequestDispatcher("/WEB-INF/Logout.jsp");
-			disp.forward(request, response);
-			return;
-		}
-		
-//		if (session.isNew()) {
-//			return;
-//		}
-		
-//		if (session.getAttribute(arg0)) {
-//			
-//		}
+		try {
+			DbHelper dbHelper = new DbHelper();
+			dbHelper.connect();
+			boolean found = dbHelper.logon(pastUsername, pastPassword);
+			dbHelper.disconnect();
+			
+			if (found) {
+				disp = request.getRequestDispatcher("/WEB-INF/Logout.jsp");
+				return;
+			}
+		} catch (SQLException sqle) {}
 	}
 
 	private void handleLogout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		session.invalidate();
-		RequestDispatcher disp = request.getRequestDispatcher("/WEB-INF/Login.jsp");
-		disp.forward(request, response);
-		return;
+		disp = request.getRequestDispatcher("/WEB-INF/Login.jsp");
 	}
 
 }

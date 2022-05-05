@@ -8,7 +8,7 @@
 </head>
 <body>
 	<div>
-		<h2>Welcome, ???!</h2>
+		<h2>Welcome, ${username}!</h2>
 	</div>
 	<div>
 		<form action="/Servlets/Loginator" method="post">
