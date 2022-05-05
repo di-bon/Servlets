@@ -15,8 +15,8 @@ import javax.servlet.http.HttpSession;
  */
 @WebServlet("/Loginator")
 public class Loginator extends HttpServlet {
-	private static final String STORED_USERNAME = "pippo";
-	private static final String STORED_PASSWORD = "pippo1234";
+//	private static final String STORED_USERNAME = "pippo";
+//	private static final String STORED_PASSWORD = "pippo1234";
 	private static final long serialVersionUID = 1L;
 	private RequestDispatcher disp = null;
 
@@ -43,10 +43,10 @@ public class Loginator extends HttpServlet {
 		// TODO Auto-generated method stub
 		disp = null;
 		String requestSource = request.getParameter("source");
-		System.out.println("requestSource: " + requestSource);
+//		System.out.println("requestSource: " + requestSource);
 		
 		if (requestSource == null || requestSource.equals("login.jsp")) {			
-			System.out.println("The value of 'requestSource' is null");
+//			System.out.println("The value of 'requestSource' is null");
 			checkSession(request, response);
 		}
 		
@@ -58,7 +58,7 @@ public class Loginator extends HttpServlet {
 //		}
 
 		if (requestSource != null && disp == null) {
-			System.out.println("Source: " + requestSource);	
+//			System.out.println("Source: " + requestSource);	
 			if (requestSource.equals("login.jsp")) {
 				handleLogin(request, response);
 			} else if (requestSource.equals("logout.jsp")) {
@@ -85,15 +85,21 @@ public class Loginator extends HttpServlet {
 				
 				if (doesUserExist) {
 					HttpSession session = request.getSession();
-					session.setMaxInactiveInterval(10);
+					session.setMaxInactiveInterval(60);
 					session.setAttribute("username", username);
 					session.setAttribute("password", password);
 					request.setAttribute("username", username);
 					disp = request.getRequestDispatcher("/WEB-INF/Logout.jsp");
-					disp.forward(request, response);
+					//disp.forward(request, response);
 					return;
 				}
-			} catch (SQLException sqle) {}
+			} catch (SQLException sqle) {
+				request.setAttribute("error", "SQLException");
+				request.setAttribute("errorMessage", sqle.getStackTrace());
+				disp = request.getRequestDispatcher("/WEB-INF/Error.jsp");
+				return;
+			}
+			
 //			if (username.equals(STORED_USERNAME) && password.equals(STORED_PASSWORD)) {
 //				System.out.println("username and password match");
 //				HttpSession session = request.getSession();
@@ -104,6 +110,7 @@ public class Loginator extends HttpServlet {
 //				return;
 //			}
 //			request.setAttribute("wrongPassword", true);
+			
 			disp = request.getRequestDispatcher("/WEB-INF/Login.jsp");
 			return;
 		}
@@ -128,7 +135,9 @@ public class Loginator extends HttpServlet {
 				disp = request.getRequestDispatcher("/WEB-INF/Logout.jsp");
 				return;
 			}
-		} catch (SQLException sqle) {}
+		} catch (SQLException sqle) {
+			return;
+		}
 	}
 
 	private void handleLogout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -136,5 +145,4 @@ public class Loginator extends HttpServlet {
 		session.invalidate();
 		disp = request.getRequestDispatcher("/WEB-INF/Login.jsp");
 	}
-
 }
