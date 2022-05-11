@@ -15,29 +15,66 @@
 <body>
 	<script type="text/javascript">
 		$(document).ready(function  () {
-			// function to show password
+			passwordinput = document.getElementById('password');
+			
+			$(document).on('click', '#show-password', function () {
+				passwordinput.type === "password" ? passwordinput.type = "text" : passwordinput.type = "password";
+			})
+			
+/* 	 		if ($('.toast .toast-body').html().trim()!="") { */
+		 	if ($('.toast #wrongcredentials').html().trim()!="") {
+				$('.toast').toast('show');
+			}
 		})
 	</script>
 
-	<form action="/Servlets/Loginator" method="post">
-		<div>
-			<h2>Login</h2>
+	<!-- Toast -->
+	<!-- For Overlay -->
+	<div style="position: relative;">
+		<!-- Flexbox container for aligning the toasts: position-fixed class do the overlay -->
+		<div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center w-100">
+		
+			<!-- Container for stacking the toasts (if you show more than one) -->
+			<div class="toast-container">
+				<div class="toast" data-bs-delay="5000" data-autohide="false" role="alert" aria-live="assertive" aria-atomic="true">
+			  		<div class="toast-header">
+			    		<!-- img src="..." class="rounded me-2" alt="..." -->
+			    		<strong class="me-auto">Credenziali errate</strong>
+			    		<!-- <small>popup</small> -->
+			    		<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+				  	</div>
+				  	<div id="wrongcredentials" style="display: none;">${wrongcredentials}</div>
+				  	<!-- <div class="toast-body">
+				    	Credenziali errate
+				  	</div> -->
+				</div>
+			</div>
 		</div>
-		<div class="form-group">
-			<label for="username">Username</label>
-		    <input type="username" class="form-control" id="username" name="username" aria-describedby="usernameHelp" placeholder="Enter username" required>
-		    <small id="usernameHelp" class="form-text text-muted">We'll never share your username with anyone else.</small>
+	</div>
+	
+	<div class="row d-flex justify-content-center"  style="margin-top: 35px">
+		<div class="col-md-6">
+			<form action="/Servlets/Loginator" method="post">
+				<div>
+					<h2>Login</h2>
+				</div>
+				<div class="form-group">
+					<label for="email">Email</label>
+				    <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email" required>
+				    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+				</div>
+				<div class="form-group">
+				    <label for="password">Password</label>
+				    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+				</div>
+				<div class="form-check">
+				    <input type="checkbox" class="form-check-input" id="show-password" name=""show-password"">
+				    <label class="form-check-label" for=""show-password"">Show password</label>
+				</div>
+				<input type="hidden" name="source" value="login.jsp" />
+				<button type="submit" class="btn btn-primary">Login</button>
+			</form>
 		</div>
-		<div class="form-group">
-		    <label for="password">Password</label>
-		    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-		</div>
-		<div class="form-check">
-		    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-		    <label class="form-check-label" for="exampleCheck1">Check me out</label>
-		</div>
-		<input type="hidden" name="source" value="login.jsp" />
-		<button type="submit" class="btn btn-primary">Login</button>
-	</form>
+	</div>
 </body>
 </html>

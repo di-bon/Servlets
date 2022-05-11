@@ -9,9 +9,9 @@ import java.sql.Statement;
 
 public class DbHelper {
 	private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
-	private static final String DB_URL = "jdbc:mysql://localhost:3306/loginator";
-	private static final String USER = "root";
-	private static final String PASSWORD = "";
+	private static final String DB_URL = "jdbc:mysql://localhost:3306/userlogin";
+	private static final String USER = "login";
+	private static final String PASSWORD = "pippo";
 	
 	private Connection conn;
 	
@@ -35,10 +35,17 @@ public class DbHelper {
 		}
 	}
 	
-	public boolean logon (String username, String password) throws SQLException {
-		String query = "SELECT * FROM users WHERE username='" + username + "' AND password=md5('" + password + "');";
+	public boolean logon (String email, String password) throws SQLException {
+		String query = "SELECT * FROM credentials WHERE email='" + email + "' AND pwd=md5('" + password + "');";
 		Statement sql = conn.createStatement();
 		ResultSet res = sql.executeQuery(query);
 		return res.next();
+	}
+	
+	public String getName(String email) throws SQLException {
+		String query = "SELECT name FROM credentials WHERE email='" + email + "'";
+		Statement statement = conn.createStatement();
+		ResultSet res = statement.executeQuery(query);
+		return res.next() ? res.getString("name") : "";
 	}
 }

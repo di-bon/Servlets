@@ -73,29 +73,39 @@ public class Loginator extends HttpServlet {
 
 	private void handleLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		String username = request.getParameter("username");
+		String email = request.getParameter("email");
 		String password = request.getParameter("password");
 		
-		if (username != null && password != null) {
+		HttpSession session = request.getSession();
+		if (email != null && password != null) {
 			DbHelper dbHelper = new DbHelper();
 			try { 
 				dbHelper.connect();
-				boolean doesUserExist = dbHelper.logon(username, password);
+				boolean doesUserExist = dbHelper.logon(email, password);
 				dbHelper.disconnect();
 				
 				if (doesUserExist) {
-					HttpSession session = request.getSession();
 					session.setMaxInactiveInterval(60);
-					session.setAttribute("username", username);
+					dbHelper.connect();
+					String name = dbHelper.getName(email);
+					dbHelper.disconnect();
+					if (name.equals("")) {
+						name = email;
+					}
+					session.setAttribute("name", name);
+					session.setAttribute("email", email);
 					session.setAttribute("password", password);
-					request.setAttribute("username", username);
+					request.setAttribute("email", email);
 					disp = request.getRequestDispatcher("/WEB-INF/Logout.jsp");
 					//disp.forward(request, response);
 					return;
 				}
+					session.setMaxInactiveInterval(60);
+					session.setAttribute("wrongcredentials", true);
 			} catch (SQLException sqle) {
 				request.setAttribute("error", "SQLException");
-				request.setAttribute("errorMessage", sqle.getStackTrace());
+				request.setAttribute("errorMessage", sqle.getMessage());
+				session.invalidate();
 				disp = request.getRequestDispatcher("/WEB-INF/Error.jsp");
 				return;
 			}
@@ -111,6 +121,8 @@ public class Loginator extends HttpServlet {
 //			}
 //			request.setAttribute("wrongPassword", true);
 			
+			session.setMaxInactiveInterval(60);
+			session.setAttribute("wrongcredentials", true);
 			disp = request.getRequestDispatcher("/WEB-INF/Login.jsp");
 			return;
 		}
@@ -118,17 +130,17 @@ public class Loginator extends HttpServlet {
 	
 	private void checkSession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		String pastUsername = (String) session.getAttribute("username");
+		String pastEmail = (String) session.getAttribute("email");
 		String pastPassword = (String) session.getAttribute("password");
 		
-		if (pastUsername == null || pastPassword == null) {
+		if (pastEmail == null || pastPassword == null) {
 			return;
 		}
 		
 		try {
 			DbHelper dbHelper = new DbHelper();
 			dbHelper.connect();
-			boolean found = dbHelper.logon(pastUsername, pastPassword);
+			boolean found = dbHelper.logon(pastEmail, pastPassword);
 			dbHelper.disconnect();
 			
 			if (found) {
