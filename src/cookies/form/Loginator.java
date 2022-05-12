@@ -1,10 +1,15 @@
+// Francesco Di Bon 5BIA 12-05-2022
+
 package cookies.form;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Date;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,7 +18,7 @@ import javax.servlet.http.HttpSession;
 /**
  * Servlet implementation class Loginator
  */
-@WebServlet("/Loginator")
+@WebServlet("/App")
 public class Loginator extends HttpServlet {
 //	private static final String STORED_USERNAME = "pippo";
 //	private static final String STORED_PASSWORD = "pippo1234";
@@ -25,14 +30,12 @@ public class Loginator extends HttpServlet {
 	 */
 	public Loginator() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doPost(request, response);
 	}
 
@@ -40,13 +43,13 @@ public class Loginator extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		disp = null;
 		String requestSource = request.getParameter("source");
 //		System.out.println("requestSource: " + requestSource);
 		
 		if (requestSource == null || requestSource.equals("login.jsp")) {			
 //			System.out.println("The value of 'requestSource' is null");
+			System.out.println("boh");
 			checkSession(request, response);
 		}
 		
@@ -92,12 +95,16 @@ public class Loginator extends HttpServlet {
 					if (name.equals("")) {
 						name = email;
 					}
+					Cookie cookie = new Cookie("JSESSIONID", session.getId());
+					cookie.setMaxAge(Integer.MAX_VALUE);
+					response.addCookie(cookie);
 					session.setAttribute("name", name);
 					session.setAttribute("email", email);
 					session.setAttribute("password", password);
+					session.setAttribute("lastlogin", new Date().toString());
+					session.setAttribute("showlogintoast", "true");
 					request.setAttribute("email", email);
 					disp = request.getRequestDispatcher("/WEB-INF/Logout.jsp");
-					//disp.forward(request, response);
 					return;
 				}
 					session.setMaxInactiveInterval(60);
@@ -142,8 +149,8 @@ public class Loginator extends HttpServlet {
 			dbHelper.connect();
 			boolean found = dbHelper.logon(pastEmail, pastPassword);
 			dbHelper.disconnect();
-			
 			if (found) {
+				session.setAttribute("showlogintoast", "false");
 				disp = request.getRequestDispatcher("/WEB-INF/Logout.jsp");
 				return;
 			}

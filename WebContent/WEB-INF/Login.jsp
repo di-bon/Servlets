@@ -1,4 +1,4 @@
-<!-- Francesco Di Bon 5BIA 28-4-2022 -->
+<!-- Francesco Di Bon 5BIA 12-05-2022 -->
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -54,7 +54,7 @@
 	
 	<div class="row d-flex justify-content-center"  style="margin-top: 35px">
 		<div class="col-md-6">
-			<form action="/Servlets/Loginator" method="post">
+			<form action="App" method="post">
 				<div>
 					<h2>Login</h2>
 				</div>

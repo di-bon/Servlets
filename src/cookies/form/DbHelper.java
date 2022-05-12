@@ -1,6 +1,7 @@
+// Francesco Di Bon 5BIA 12-05-2022
+
 package cookies.form;
 
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -9,7 +10,7 @@ import java.sql.Statement;
 
 public class DbHelper {
 	private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
-	private static final String DB_URL = "jdbc:mysql://localhost:3306/userlogin";
+	private static final String DB_URL = "jdbc:mysql://192.168.80.53:3306/userlogin";
 	private static final String USER = "login";
 	private static final String PASSWORD = "pippo";
 	

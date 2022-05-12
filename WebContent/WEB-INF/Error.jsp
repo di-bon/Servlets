@@ -1,3 +1,5 @@
+<!-- Francesco Di Bon 5BIA 12-05-2022 -->
+
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -8,11 +10,6 @@
 	<script src='js/jquery-3.6.0.min.js' type='text/javascript'></script>
 	<script src='js/bootstrapjs/bootstrap.bundle.min.js' type='text/javascript'></script>
 	<title>Error</title>
-	<script>
-		function loadPage(page) {
-			window.location.replace("/Servlets/" + page);
-		}
-	</script>
 </head>
 <body>
 	<div class="row d-flex justify-content-center" style="margin-top: 35px">
@@ -20,7 +17,9 @@
 			<h5>${error}</h5>
 			<div>${errorMessage}</div>
 			<div>
-				<input type="button" id="back-to-login" class="btn btn-primary" onClick="loadPage('Loginator')" value="Go to login page" />
+				<form action="App" method="post">
+					<input type="submit" id="back-to-login" class="btn btn-primary" value="Go to login page" />
+				</form>
 			</div>
 		</div>
 	</div>

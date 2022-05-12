@@ -1,3 +1,5 @@
+<!-- Francesco Di Bon 5BIA 12-05-2022 -->
+
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -13,7 +15,14 @@
 
 	<script>
 		$(document).ready( function () {
-			$('.toast').toast('show');
+			const colors = ["white", "red", "green", "yellow", "cyan"];
+			count = 1;
+			
+			if ($('#showlogintoast').html().trim() == "true") {
+				$('.toast').toast('show');
+			} else {
+				$('.toast').hide();
+			}
 			
 			$(document).on('click', '#button-logout', function () {
 				modalconfirm = new bootstrap.Modal(document.getElementById('modalconfirm'), {
@@ -31,6 +40,15 @@
 			$(document).on('click', '#confirm-logout', function () {
 				logoutform.submit();
 				modalconfirm.dismiss();
+			})
+			
+			$(document).on('click', '#change-background', function () {
+				document.body.style.backgroundColor = colors[count];
+				count = count + 1;
+				if (count >= colors.length) {
+					count = count % colors.length;
+				}
+				/* console.log(count); */
 			})
 		})
 	</script>
@@ -50,7 +68,7 @@
 			    		<!-- <small>popup</small> -->
 			    		<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
 				  	</div>
-				  	<!-- <div id="already-shown" style="display: none;"></div> -->
+				  	<div id="showlogintoast" style="display: none;">${showlogintoast}</div>
 				</div>
 			</div>
 		</div>
@@ -66,7 +84,7 @@
 	      </div>
 	      <div class="modal-body">
 	        <p>Do you really want to logout?</p>
-	        <form id=logoutform action="/Servlets/Loginator" method="post">
+	        <form id=logoutform action="App" method="post">
 				<div>
 					<input type="hidden" name="logout" value="yes" />
 					<input type="hidden" name="source" value="logout.jsp" />
@@ -81,17 +99,30 @@
 	  </div>
 	</div>
 
+	<!-- Navigation bar -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-light"> 
+		<a class="navbar-brand" href="#">${name}</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item">
+				<input type="button" id="change-background" class="btn" value="Change background color" />
+			</li>
+		</ul>
+	  </div>
+	</nav>
+	
+
 	<div class="row d-flex justify-content-center" style="margin-top: 35px">
 		<div class="col-md-6" style="text-align: center;">
 			<div>
 				<h2>Welcome, ${name}!</h2>
 			</div>
+			<div>Last login: ${lastlogin}</div>
 			<div>
-				<!-- <form action="/Servlets/Loginator" method="post"> -->
-					<!-- <input type="hidden" name="logout" value="yes" />
-					<input type="hidden" name="source" value="logout.jsp" /> -->
 				<input type="button" id="button-logout" class="btn btn-primary" value="logout" />
-				<!-- </form> -->
 			</div>
 		</div>
 	</div>
